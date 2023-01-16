@@ -5,10 +5,10 @@ go 1.17
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20210715213245-6c3934b029d8
 	github.com/Microsoft/go-winio v0.5.2
-	github.com/Microsoft/hcsshim v0.9.4
+	github.com/Microsoft/hcsshim v0.9.6
 	github.com/containerd/aufs v1.0.0
 	github.com/containerd/btrfs v1.0.0
-	github.com/containerd/cgroups v1.0.3
+	github.com/containerd/cgroups v1.0.4
 	github.com/containerd/console v1.0.3
 	github.com/containerd/continuity v0.3.0
 	github.com/containerd/fifo v1.0.0
@@ -95,7 +95,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
+	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/miekg/pkcs11 v1.1.1 // indirect
 	github.com/mistifyio/go-zfs v2.1.2-0.20190413222219-f784269be439+incompatible // indirect
 	github.com/moby/spdystream v0.2.0 // indirect
