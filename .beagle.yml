@@ -39,7 +39,7 @@ steps:
   - name: golang
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.19
     environment:
-      VERSION: v1.6.9-beagle
+      VERSION: v1.6.15-beagle
     commands:
       - bash ./.beagle/build.sh
 
@@ -53,7 +53,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v1.6.9
+      version: v1.6.15
       channel: amd64
       args: 'TARGETOS=linux,TARGETARCH=amd64'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -72,7 +72,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64
       cwd: _output
       repo: wod/containerd
-      version: v1.6.9
+      version: v1.6.15
       channel: arm64
       args: 'TARGETOS=linux,TARGETARCH=arm64'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -91,7 +91,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-ppc64le
       cwd: _output
       repo: wod/containerd
-      version: v1.6.9
+      version: v1.6.15
       channel: ppc64le
       args: 'TARGETOS=linux,TARGETARCH=ppc64le'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -110,7 +110,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-mips64le
       cwd: _output
       repo: wod/containerd
-      version: v1.6.9
+      version: v1.6.15
       channel: mips64le
       args: 'TARGETOS=linux,TARGETARCH=mips64le'
       registry: registry.cn-qingdao.aliyuncs.com

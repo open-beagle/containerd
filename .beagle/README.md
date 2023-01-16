@@ -1,11 +1,13 @@
-# git
+# containerd
+
+<https://github.com/containerd/containerd>
 
 ```bash
 git remote add upstream git@github.com:containerd/containerd.git
 
 git fetch upstream
 
-git merge v1.6.9
+git merge v1.6.15
 ```
 
 ## build
@@ -14,7 +16,7 @@ git merge v1.6.9
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/containerd/containerd \
 -w /go/src/github.com/containerd/containerd \
--e VERSION=v1.6.9-beagle \
+-e VERSION=v1.6.15-beagle \
 registry.cn-qingdao.aliyuncs.com/wod/golang:1.19 \
 bash .beagle/build.sh
 ```
@@ -86,7 +88,8 @@ docker run --rm \
   -e PLUGIN_ENDPOINT=$PLUGIN_ENDPOINT \
   -e PLUGIN_ACCESS_KEY=$PLUGIN_ACCESS_KEY \
   -e PLUGIN_SECRET_KEY=$PLUGIN_SECRET_KEY \
-  -e PLUGIN_PATH="/cache/open-beagle/containerd" \
+  -e DRONE_REPO_OWNER="open-beagle" \
+  -e DRONE_REPO_NAME="containerd" \
   -e PLUGIN_MOUNT="./.git" \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
@@ -98,7 +101,8 @@ docker run --rm \
   -e PLUGIN_ENDPOINT=$PLUGIN_ENDPOINT \
   -e PLUGIN_ACCESS_KEY=$PLUGIN_ACCESS_KEY \
   -e PLUGIN_SECRET_KEY=$PLUGIN_SECRET_KEY \
-  -e PLUGIN_PATH="/cache/open-beagle/containerd" \
+  -e DRONE_REPO_OWNER="open-beagle" \
+  -e DRONE_REPO_NAME="containerd" \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   registry.cn-qingdao.aliyuncs.com/wod/devops-s3-cache:1.0
