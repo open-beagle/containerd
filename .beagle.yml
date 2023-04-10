@@ -21,7 +21,6 @@ steps:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-s3-cache:1.0
     settings:
       restore: true
-      path: /cache/open-beagle/containerd
       mount:
         - ./.git
       endpoint: https://cache.wodcloud.com
@@ -37,10 +36,11 @@ steps:
         from_secret: SOCKS5_PROXY
 
   - name: golang
-    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.19
+    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.20
     environment:
-      VERSION: v1.6.18-beagle
+      VERSION: v1.6.20-beagle
     commands:
+      - git apply .beagle/v1.6-add-loong64-support.patch
       - bash ./.beagle/build.sh
 
   - name: docker-amd64
@@ -53,7 +53,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v1.6.18
+      version: v1.6.20
       channel: amd64
       args: 'TARGETOS=linux,TARGETARCH=amd64'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -72,7 +72,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64
       cwd: _output
       repo: wod/containerd
-      version: v1.6.18
+      version: v1.6.20
       channel: arm64
       args: 'TARGETOS=linux,TARGETARCH=arm64'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -91,7 +91,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-ppc64le
       cwd: _output
       repo: wod/containerd
-      version: v1.6.18
+      version: v1.6.20
       channel: ppc64le
       args: 'TARGETOS=linux,TARGETARCH=ppc64le'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -110,9 +110,28 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-mips64le
       cwd: _output
       repo: wod/containerd
-      version: v1.6.18
+      version: v1.6.20
       channel: mips64le
       args: 'TARGETOS=linux,TARGETARCH=mips64le'
+      registry: registry.cn-qingdao.aliyuncs.com
+      registry_user:
+        from_secret: REGISTRY_USER_ALIYUN
+      registry_password:
+        from_secret: REGISTRY_PASSWORD_ALIYUN
+
+  - name: docker-loong64
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
+    settings:
+      dockerfile: .beagle/dockerfile
+      base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-loong64
+      cwd: _output
+      repo: wod/containerd
+      version: v1.6.20
+      channel: loong64
+      args: 'TARGETOS=linux,TARGETARCH=loong64'
       registry: registry.cn-qingdao.aliyuncs.com
       registry_user:
         from_secret: REGISTRY_USER_ALIYUN

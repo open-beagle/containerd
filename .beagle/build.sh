@@ -30,3 +30,9 @@ export CC=mips64el-linux-gnuabi64-gcc
 make
 mkdir -p _output/linux-$GOARCH/
 mv bin/* _output/linux-$GOARCH/
+
+export GOARCH=loong64
+export CC=loongarch64-linux-gnu-gcc
+make
+mkdir -p _output/linux-$GOARCH/
+mv bin/* _output/linux-$GOARCH/

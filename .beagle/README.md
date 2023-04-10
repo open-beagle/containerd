@@ -7,17 +7,23 @@ git remote add upstream git@github.com:containerd/containerd.git
 
 git fetch upstream
 
-git merge v1.6.18
+git merge v1.6.20
 ```
 
 ## build
 
 ```bash
+# loong64 patch
+## go.mod
+## go.etcd.io/bbolt v1.3.7-0.20221114114133-eedea6cb26ef > go.etcd.io/bbolt v1.3.6
+git apply .beagle/v1.6-add-loong64-support.patch
+
+# golang build
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/containerd/containerd \
 -w /go/src/github.com/containerd/containerd \
--e VERSION=v1.6.18-beagle \
-registry.cn-qingdao.aliyuncs.com/wod/golang:1.19 \
+-e VERSION=v1.6.20-beagle \
+registry.cn-qingdao.aliyuncs.com/wod/golang:1.20 \
 bash .beagle/build.sh
 ```
 
@@ -77,6 +83,13 @@ docker run -it --rm \
 -w /go/src/github.com/containerd/containerd \
 registry.cn-qingdao.aliyuncs.com/wod/alpine:3-mips64le \
 ./_output/linux-mips64le/containerd -v
+
+# loong64-test
+docker run -it --rm \
+-v $PWD/:/go/src/github.com/containerd/containerd \
+-w /go/src/github.com/containerd/containerd \
+registry.cn-qingdao.aliyuncs.com/wod/alpine:3-loong64 \
+./_output/linux-loong64/containerd -v
 ```
 
 ## cache
