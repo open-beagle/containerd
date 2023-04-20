@@ -23,7 +23,7 @@ docker run -it --rm \
 -v $PWD/:/go/src/github.com/containerd/containerd \
 -w /go/src/github.com/containerd/containerd \
 -e VERSION=v1.6.20-beagle \
-registry.cn-qingdao.aliyuncs.com/wod/golang:1.20 \
+registry.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
 bash .beagle/build.sh
 ```
 
