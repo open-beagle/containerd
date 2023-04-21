@@ -126,7 +126,7 @@ steps:
         path: /var/run/docker.sock
     settings:
       dockerfile: .beagle/dockerfile
-      base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-loong64
+      base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-mips64le
       cwd: _output
       repo: wod/containerd
       version: v1.6.20
