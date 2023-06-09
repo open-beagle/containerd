@@ -7,7 +7,7 @@ git remote add upstream git@github.com:containerd/containerd.git
 
 git fetch upstream
 
-git merge v1.6.20
+git merge v1.6.21
 ```
 
 ## build
@@ -22,7 +22,7 @@ git apply .beagle/v1.6-add-loong64-support.patch
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/containerd/containerd \
 -w /go/src/github.com/containerd/containerd \
--e VERSION=v1.6.20-beagle \
+-e VERSION=v1.6.21-beagle \
 registry.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
 bash .beagle/build.sh
 ```
