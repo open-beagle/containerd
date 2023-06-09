@@ -3,7 +3,7 @@ name: docker
 
 trigger:
   branch:
-    - main
+    - release-v1.6
 
 workspace:
   path: /go/src/github.com/containerd/containerd
