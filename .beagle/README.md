@@ -13,17 +13,12 @@ git merge v1.7.2
 ## build
 
 ```bash
-# loong64 patch
-## go.mod
-# ## go.etcd.io/bbolt v1.3.7-0.20221114114133-eedea6cb26ef > go.etcd.io/bbolt v1.3.6
-# git apply .beagle/v1.6-add-loong64-support.patch
-
 # golang build
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/containerd/containerd \
 -w /go/src/github.com/containerd/containerd \
 -e VERSION=v1.7.2-beagle \
-registry.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
+registry.cn-qingdao.aliyuncs.com/wod/golang:1.20-loongnix \
 bash .beagle/build.sh
 ```
 
