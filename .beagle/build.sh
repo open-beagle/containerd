@@ -7,6 +7,7 @@ apt-get install -y --no-install-recommends libbtrfs-dev
 
 export GO111MODULE=off
 export STATIC=true
+export BUILDTAGS="seccomp"
 
 export GOARCH=amd64
 make
@@ -37,4 +38,4 @@ export CC=loongarch64-linux-gnu-gcc
 make
 mkdir -p _output/linux-$GOARCH/
 mv bin/* _output/linux-$GOARCH/
-git -R apply .beagle/v1.7-add-loong64-support.patch
+git apply -R .beagle/v1.7-add-loong64-support.patch
