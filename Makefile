@@ -32,7 +32,7 @@ TEST_IMAGE_LIST ?=
 # Used to populate variables in version package.
 VERSION ?= $(shell git describe --match 'v[0-9]*' --dirty='.m' --always)
 # REVISION=$(shell git rev-parse HEAD)$(shell if ! git diff --no-ext-diff --quiet --exit-code; then echo .m; fi)
-REVISION=$(git rev-parse --short HEAD 2> /dev/null || true)
+REVISION=$(shell git rev-parse --short HEAD)
 PACKAGE=github.com/containerd/containerd
 SHIM_CGO_ENABLED ?= 0
 
