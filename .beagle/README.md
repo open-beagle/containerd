@@ -20,6 +20,14 @@ docker run -it --rm \
 -e VERSION=v1.7.9-beagle \
 registry.cn-qingdao.aliyuncs.com/wod/golang:1.21 \
 bash .beagle/build.sh
+
+# golang build loong64
+docker run -it --rm \
+-v $PWD/:/go/src/github.com/containerd/containerd \
+-w /go/src/github.com/containerd/containerd \
+-e VERSION=v1.7.9-beagle \
+registry.cn-qingdao.aliyuncs.com/wod/golang:1.21-loongnix \
+bash .beagle/build-loong64.sh
 ```
 
 ## test

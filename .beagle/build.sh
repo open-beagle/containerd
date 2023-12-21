@@ -31,11 +31,3 @@ export CC=mips64el-linux-gnuabi64-gcc
 make
 mkdir -p _output/linux-$GOARCH/
 mv bin/* _output/linux-$GOARCH/
-
-# git apply .beagle/v1.7-add-loong64-support.patch
-# export GOARCH=loong64
-# export CC=loongarch64-linux-gnu-gcc
-# make
-# mkdir -p _output/linux-$GOARCH/
-# mv bin/* _output/linux-$GOARCH/
-# git apply -R .beagle/v1.7-add-loong64-support.patch

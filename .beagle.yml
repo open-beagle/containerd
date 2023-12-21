@@ -118,24 +118,31 @@ steps:
       registry_password:
         from_secret: REGISTRY_PASSWORD_ALIYUN
 
-  # - name: docker-loong64
-  #   image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
-  #   volumes:
-  #     - name: docker
-  #       path: /var/run/docker.sock
-  #   settings:
-  #     dockerfile: .beagle/dockerfile
-  #     base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
-  #     cwd: _output
-  #     repo: wod/containerd
-  #     version: v1.7.9
-  #     channel: loong64
-  #     args: 'TARGETOS=linux,TARGETARCH=loong64'
-  #     registry: registry.cn-qingdao.aliyuncs.com
-  #     registry_user:
-  #       from_secret: REGISTRY_USER_ALIYUN
-  #     registry_password:
-  #       from_secret: REGISTRY_PASSWORD_ALIYUN
+  - name: golang
+    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.21-loongnix
+    environment:
+      VERSION: v1.7.9-beagle
+    commands:
+      - bash ./.beagle/build-loong64.sh
+
+  - name: docker-loong64
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
+    settings:
+      dockerfile: .beagle/dockerfile
+      base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
+      cwd: _output
+      repo: wod/containerd
+      version: v1.7.9
+      channel: loong64
+      args: 'TARGETOS=linux,TARGETARCH=loong64'
+      registry: registry.cn-qingdao.aliyuncs.com
+      registry_user:
+        from_secret: REGISTRY_USER_ALIYUN
+      registry_password:
+        from_secret: REGISTRY_PASSWORD_ALIYUN
 
 ---
 kind: secret
