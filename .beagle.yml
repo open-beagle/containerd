@@ -118,7 +118,7 @@ steps:
       registry_password:
         from_secret: REGISTRY_PASSWORD_ALIYUN
 
-  - name: golang
+  - name: golang-loong64
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.21-loongnix
     environment:
       VERSION: v1.7.9-beagle
