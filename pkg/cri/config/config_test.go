@@ -67,6 +67,7 @@ func TestValidateConfig(t *testing.T) {
 					},
 				},
 			},
+			warnings: []deprecation.Warning{deprecation.CRIUntrustedWorkloadRuntime},
 		},
 		"both untrusted_workload_runtime and runtime[untrusted]": {
 			config: &PluginConfig{
@@ -109,6 +110,7 @@ func TestValidateConfig(t *testing.T) {
 					},
 				},
 			},
+			warnings: []deprecation.Warning{deprecation.CRIDefaultRuntime},
 		},
 		"no default_runtime_name": {
 			config:      &PluginConfig{},
@@ -146,6 +148,7 @@ func TestValidateConfig(t *testing.T) {
 					},
 				},
 			},
+			warnings: []deprecation.Warning{deprecation.CRISystemdCgroupV1},
 		},
 		"deprecated systemd_cgroup for v2 runtime": {
 			config: &PluginConfig{
@@ -224,6 +227,7 @@ func TestValidateConfig(t *testing.T) {
 					},
 				},
 			},
+			warnings: []deprecation.Warning{deprecation.CRIRuntimeEngine},
 		},
 		"deprecated runtime_engine for v2 runtime": {
 			config: &PluginConfig{
@@ -263,6 +267,7 @@ func TestValidateConfig(t *testing.T) {
 					},
 				},
 			},
+			warnings: []deprecation.Warning{deprecation.CRIRuntimeRoot},
 		},
 		"deprecated runtime_root for v2 runtime": {
 			config: &PluginConfig{
@@ -471,6 +476,35 @@ func TestValidateConfig(t *testing.T) {
 				DrainExecSyncIOTimeout: "10",
 			},
 			expectedErr: "invalid `drain_exec_sync_io_timeout`",
+		},
+		"deprecated CRIU path": {
+			config: &PluginConfig{
+				ContainerdConfig: ContainerdConfig{
+					DefaultRuntimeName: RuntimeDefault,
+					Runtimes: map[string]Runtime{
+						RuntimeDefault: {
+							SandboxMode: string(ModePodSandbox),
+							Options: map[string]interface{}{
+								"CriuPath": "/path/to/criu-binary",
+							},
+						},
+					},
+				},
+			},
+			expected: &PluginConfig{
+				ContainerdConfig: ContainerdConfig{
+					DefaultRuntimeName: RuntimeDefault,
+					Runtimes: map[string]Runtime{
+						RuntimeDefault: {
+							SandboxMode: string(ModePodSandbox),
+							Options: map[string]interface{}{
+								"CriuPath": "/path/to/criu-binary",
+							},
+						},
+					},
+				},
+			},
+			warnings: []deprecation.Warning{deprecation.CRICRIUPath},
 		},
 	} {
 		t.Run(desc, func(t *testing.T) {

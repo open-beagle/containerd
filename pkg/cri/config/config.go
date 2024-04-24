@@ -28,6 +28,30 @@ import (
 	"github.com/containerd/containerd/plugin"
 )
 
+const (
+	// defaultImagePullProgressTimeoutDuration is the default value of imagePullProgressTimeout.
+	//
+	// NOTE:
+	//
+	// This ImagePullProgressTimeout feature is ported from kubelet/dockershim's
+	// --image-pull-progress-deadline. The original value is 1m0. Unlike docker
+	// daemon, the containerd doesn't have global concurrent download limitation
+	// before migrating to Transfer Service. If kubelet runs with concurrent
+	// image pull, the node will run under IO pressure. The ImagePull process
+	// could be impacted by self, if the target image is large one with a
+	// lot of layers. And also both container's writable layers and image's storage
+	// share one disk. The ImagePull process commits blob to content store
+	// with fsync, which might bring the unrelated files' dirty pages into
+	// disk in one transaction [1]. The 1m0 value isn't good enough. Based
+	// on #9347 case and kubernetes community's usage [2], the default value
+	// is updated to 5m0. If end-user still runs into unexpected cancel,
+	// they need to config it based on their environment.
+	//
+	// [1]: Fast commits for ext4 - https://lwn.net/Articles/842385/
+	// [2]: https://github.com/kubernetes/kubernetes/blob/1635c380b26a1d8cc25d36e9feace9797f4bae3c/cluster/gce/util.sh#L882
+	defaultImagePullProgressTimeoutDuration = 5 * time.Minute
+)
+
 type SandboxControllerMode string
 
 const (
@@ -338,11 +362,11 @@ type PluginConfig struct {
 	// EnableCDI indicates to enable injection of the Container Device Interface Specifications
 	// into the OCI config
 	// For more details about CDI and the syntax of CDI Spec files please refer to
-	// https://github.com/container-orchestrated-devices/container-device-interface.
+	// https://tags.cncf.io/container-device-interface.
 	EnableCDI bool `toml:"enable_cdi" json:"enableCDI"`
 	// CDISpecDirs is the list of directories to scan for Container Device Interface Specifications
 	// For more details about CDI configuration please refer to
-	// https://github.com/container-orchestrated-devices/container-device-interface#containerd-configuration
+	// https://tags.cncf.io/container-device-interface#containerd-configuration
 	CDISpecDirs []string `toml:"cdi_spec_dirs" json:"cdiSpecDirs"`
 	// ImagePullProgressTimeout is the maximum duration that there is no
 	// image data read from image registry in the open connection. It will
@@ -361,6 +385,12 @@ type PluginConfig struct {
 	//
 	// For example, the value can be '5h', '2h30m', '10s'.
 	DrainExecSyncIOTimeout string `toml:"drain_exec_sync_io_timeout" json:"drainExecSyncIOTimeout"`
+	// ImagePullWithSyncFs is an experimental setting. It's to force sync
+	// filesystem during unpacking to ensure that data integrity.
+	ImagePullWithSyncFs bool `toml:"image_pull_with_sync_fs" json:"imagePullWithSyncFs"`
+	// IgnoreDeprecationWarnings is the list of the deprecation IDs (such as "io.containerd.deprecation/pull-schema-1-image")
+	// that should be ignored for checking "ContainerdHasNoDeprecationWarnings" condition.
+	IgnoreDeprecationWarnings []string `toml:"ignore_deprecation_warnings" json:"ignoreDeprecationWarnings"`
 }
 
 // X509KeyPairStreaming contains the x509 configuration for streaming
@@ -409,11 +439,13 @@ func ValidatePluginConfig(ctx context.Context, c *PluginConfig) ([]deprecation.W
 		if _, ok := c.ContainerdConfig.Runtimes[RuntimeUntrusted]; ok {
 			return warnings, fmt.Errorf("conflicting definitions: configuration includes both `untrusted_workload_runtime` and `runtimes[%q]`", RuntimeUntrusted)
 		}
+		warnings = append(warnings, deprecation.CRIUntrustedWorkloadRuntime)
 		c.ContainerdConfig.Runtimes[RuntimeUntrusted] = c.ContainerdConfig.UntrustedWorkloadRuntime
 	}
 
 	// Validation for deprecated default_runtime field.
 	if c.ContainerdConfig.DefaultRuntime.Type != "" {
+		warnings = append(warnings, deprecation.CRIDefaultRuntime)
 		log.G(ctx).Warning("`default_runtime` is deprecated, please use `default_runtime_name` to reference the default configuration you have defined in `runtimes`")
 		c.ContainerdConfig.DefaultRuntimeName = RuntimeDefault
 		c.ContainerdConfig.Runtimes[RuntimeDefault] = c.ContainerdConfig.DefaultRuntime
@@ -432,6 +464,7 @@ func ValidatePluginConfig(ctx context.Context, c *PluginConfig) ([]deprecation.W
 		if c.ContainerdConfig.Runtimes[c.ContainerdConfig.DefaultRuntimeName].Type != plugin.RuntimeLinuxV1 {
 			return warnings, fmt.Errorf("`systemd_cgroup` only works for runtime %s", plugin.RuntimeLinuxV1)
 		}
+		warnings = append(warnings, deprecation.CRISystemdCgroupV1)
 		log.G(ctx).Warning("`systemd_cgroup` is deprecated, please use runtime `options` instead")
 	}
 	if c.NoPivot {
@@ -446,12 +479,14 @@ func ValidatePluginConfig(ctx context.Context, c *PluginConfig) ([]deprecation.W
 			if r.Type != plugin.RuntimeLinuxV1 {
 				return warnings, fmt.Errorf("`runtime_engine` only works for runtime %s", plugin.RuntimeLinuxV1)
 			}
+			warnings = append(warnings, deprecation.CRIRuntimeEngine)
 			log.G(ctx).Warning("`runtime_engine` is deprecated, please use runtime `options` instead")
 		}
 		if r.Root != "" {
 			if r.Type != plugin.RuntimeLinuxV1 {
 				return warnings, fmt.Errorf("`runtime_root` only works for runtime %s", plugin.RuntimeLinuxV1)
 			}
+			warnings = append(warnings, deprecation.CRIRuntimeRoot)
 			log.G(ctx).Warning("`runtime_root` is deprecated, please use runtime `options` instead")
 		}
 		if !r.PrivilegedWithoutHostDevices && r.PrivilegedWithoutHostDevicesAllDevicesAllowed {
@@ -461,6 +496,11 @@ func ValidatePluginConfig(ctx context.Context, c *PluginConfig) ([]deprecation.W
 		if len(r.SandboxMode) == 0 {
 			r.SandboxMode = string(ModePodSandbox)
 			c.ContainerdConfig.Runtimes[k] = r
+		}
+
+		if p, ok := r.Options["CriuPath"].(string); ok && p != "" {
+			log.G(ctx).Warning("`CriuPath` is deprecated, please use a criu binary in $PATH instead.")
+			warnings = append(warnings, deprecation.CRICRIUPath)
 		}
 	}
 
