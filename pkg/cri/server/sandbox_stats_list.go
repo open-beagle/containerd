@@ -18,11 +18,13 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
-	"github.com/containerd/containerd/errdefs"
-	"github.com/containerd/containerd/log"
 	sandboxstore "github.com/containerd/containerd/pkg/cri/store/sandbox"
+	"github.com/containerd/errdefs"
+	"github.com/containerd/log"
+	"github.com/containerd/ttrpc"
 	runtime "k8s.io/cri-api/pkg/apis/runtime/v1"
 
 	"github.com/hashicorp/go-multierror"
@@ -40,8 +42,10 @@ func (c *criService) ListPodSandboxStats(
 	for _, sandbox := range sandboxes {
 		sandboxStats, err := c.podSandboxStats(ctx, sandbox)
 		switch {
-		case errdefs.IsUnavailable(err):
+		case errdefs.IsUnavailable(err), errdefs.IsNotFound(err):
 			log.G(ctx).WithField("podsandboxid", sandbox.ID).Debugf("failed to get pod sandbox stats, this is likely a transient error: %v", err)
+		case errors.Is(err, ttrpc.ErrClosed):
+			log.G(ctx).WithField("podsandboxid", sandbox.ID).Debugf("failed to get pod sandbox stats, connection closed: %v", err)
 		case err != nil:
 			errs = multierror.Append(errs, fmt.Errorf("failed to decode sandbox container metrics for sandbox %q: %w", sandbox.ID, err))
 		default:

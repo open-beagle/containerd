@@ -22,7 +22,7 @@ import (
 	"path"
 	"sync"
 
-	"github.com/containerd/containerd/log"
+	"github.com/containerd/log"
 	"github.com/sirupsen/logrus"
 
 	"github.com/containerd/containerd/version"
@@ -39,7 +39,7 @@ type API interface {
 	// IsEnabled returns true if the NRI interface is enabled and initialized.
 	IsEnabled() bool
 
-	// Start start the NRI interface, allowing external NRI plugins to
+	// Start starts the NRI interface, allowing external NRI plugins to
 	// connect, register, and hook themselves into the lifecycle events
 	// of pods and containers.
 	Start() error

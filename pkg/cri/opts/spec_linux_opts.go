@@ -33,10 +33,10 @@ import (
 	runtime "k8s.io/cri-api/pkg/apis/runtime/v1"
 
 	"github.com/containerd/containerd/containers"
-	"github.com/containerd/containerd/log"
 	"github.com/containerd/containerd/mount"
 	"github.com/containerd/containerd/oci"
 	osinterface "github.com/containerd/containerd/pkg/os"
+	"github.com/containerd/log"
 )
 
 // WithMounts sorts and adds runtime and CRI mounts to the spec
@@ -65,7 +65,7 @@ func WithMounts(osi osinterface.OS, config *runtime.ContainerConfig, extra []*ru
 
 		// Sort mounts in number of parts. This ensures that high level mounts don't
 		// shadow other mounts.
-		sort.Sort(orderedMounts(mounts))
+		sort.Stable(orderedMounts(mounts))
 
 		// Mount cgroup into the container as readonly, which inherits docker's behavior.
 		s.Mounts = append(s.Mounts, runtimespec.Mount{

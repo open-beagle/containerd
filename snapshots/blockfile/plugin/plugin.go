@@ -19,9 +19,9 @@ package plugin
 import (
 	"errors"
 
-	"github.com/containerd/containerd/platforms"
 	"github.com/containerd/containerd/plugin"
 	"github.com/containerd/containerd/snapshots/blockfile"
+	"github.com/containerd/platforms"
 )
 
 // Config represents configuration for the native plugin.
@@ -67,6 +67,7 @@ func init() {
 				opts = append(opts, blockfile.WithMountOptions(config.MountOptions))
 			}
 
+			ic.Meta.Exports[plugin.SnapshotterRootDir] = root
 			return blockfile.NewSnapshotter(root, opts...)
 		},
 	})

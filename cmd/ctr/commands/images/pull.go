@@ -28,12 +28,12 @@ import (
 	"github.com/containerd/containerd/cmd/ctr/commands"
 	"github.com/containerd/containerd/cmd/ctr/commands/content"
 	"github.com/containerd/containerd/images"
-	"github.com/containerd/containerd/log"
 	"github.com/containerd/containerd/pkg/progress"
 	"github.com/containerd/containerd/pkg/transfer"
 	"github.com/containerd/containerd/pkg/transfer/image"
 	"github.com/containerd/containerd/pkg/transfer/registry"
-	"github.com/containerd/containerd/platforms"
+	"github.com/containerd/log"
+	"github.com/containerd/platforms"
 	"github.com/opencontainers/image-spec/identity"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/urfave/cli"
@@ -100,24 +100,25 @@ command. As part of this process, we do the following:
 			}
 
 			var sopts []image.StoreOpt
-			if !context.Bool("all-platforms") {
-				var p []ocispec.Platform
-				for _, s := range context.StringSlice("platform") {
-					ps, err := platforms.Parse(s)
-					if err != nil {
-						return fmt.Errorf("unable to parse platform %s: %w", s, err)
-					}
-					p = append(p, ps)
+
+			var p []ocispec.Platform
+			for _, s := range context.StringSlice("platform") {
+				ps, err := platforms.Parse(s)
+				if err != nil {
+					return fmt.Errorf("unable to parse platform %s: %w", s, err)
 				}
+				p = append(p, ps)
+			}
+
+			// Set unpack configuration
+			for _, platform := range p {
+				sopts = append(sopts, image.WithUnpack(platform, context.String("snapshotter")))
+			}
+			if !context.Bool("all-platforms") {
 				if len(p) == 0 {
 					p = append(p, platforms.DefaultSpec())
 				}
 				sopts = append(sopts, image.WithPlatforms(p...))
-
-				// Set unpack configuration
-				for _, platform := range p {
-					sopts = append(sopts, image.WithUnpack(platform, context.String("snapshotter")))
-				}
 			}
 			// TODO: Support unpack for all platforms..?
 			// Pass in a *?
