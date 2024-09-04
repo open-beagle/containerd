@@ -36,7 +36,7 @@ steps:
         from_secret: SOCKS5_PROXY
 
   - name: golang
-    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.21
+    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22
     environment:
       VERSION: v2.0.0-rc.4-beagle
     commands:
@@ -81,7 +81,7 @@ steps:
         from_secret: REGISTRY_PASSWORD_ALIYUN
 
   - name: golang-loong64
-    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.21-loongnix
+    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix
     environment:
       VERSION: v2.0.0-rc.4-beagle
     commands:
