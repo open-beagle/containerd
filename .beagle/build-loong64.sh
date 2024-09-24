@@ -2,6 +2,8 @@
 
 set -ex
 
+git config --global --add safe.directory $PWD
+
 apt-get update
 apt-get install -y --no-install-recommends libbtrfs-dev
 
