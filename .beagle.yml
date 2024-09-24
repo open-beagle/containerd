@@ -54,7 +54,7 @@ steps:
       repo: wod/containerd
       version: v2.0.0-rc.4
       channel: amd64
-      args: 'TARGETOS=linux,TARGETARCH=amd64'
+      args: "TARGETOS=linux,TARGETARCH=amd64"
       registry: registry.cn-qingdao.aliyuncs.com
       registry_user:
         from_secret: REGISTRY_USER_ALIYUN
@@ -73,7 +73,7 @@ steps:
       repo: wod/containerd
       version: v2.0.0-rc.4
       channel: arm64
-      args: 'TARGETOS=linux,TARGETARCH=arm64'
+      args: "TARGETOS=linux,TARGETARCH=arm64"
       registry: registry.cn-qingdao.aliyuncs.com
       registry_user:
         from_secret: REGISTRY_USER_ALIYUN
@@ -99,7 +99,7 @@ steps:
       repo: wod/containerd
       version: v2.0.0-rc.4
       channel: loong64
-      args: 'TARGETOS=linux,TARGETARCH=loong64'
+      args: "TARGETOS=linux,TARGETARCH=loong64"
       registry: registry.cn-qingdao.aliyuncs.com
       registry_user:
         from_secret: REGISTRY_USER_ALIYUN
@@ -140,4 +140,3 @@ name: SECRET_KEY_MINIO
 get:
   name: SECRET_KEY_MINIO
   path: devops-secrets
-
