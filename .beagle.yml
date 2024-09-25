@@ -38,9 +38,25 @@ steps:
   - name: golang
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22
     environment:
-      VERSION: v1.7.21-beagle
+      VERSION: v1.7.22-beagle
     commands:
       - bash ./.beagle/build.sh
+
+  - name: nerdctl-amd64
+    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v1.7.7-amd64
+    environment:
+      TARGET_ARCH: amd64
+    commands:
+      - mkdir -p _output/linux-$TARGET_ARCH
+      - cp /usr/local/bin/nerdctl _output/linux-$TARGET_ARCH/nerdctl
+
+  - name: nerdctl-arm64
+    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v1.7.7-arm64
+    environment:
+      TARGET_ARCH: arm64
+    commands:
+      - mkdir -p _output/linux-$TARGET_ARCH
+      - cp /usr/local/bin/nerdctl _output/linux-$TARGET_ARCH/nerdctl
 
   - name: docker-amd64
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
@@ -52,7 +68,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v1.7.21
+      version: v1.7.22
       channel: amd64
       args: 'TARGETOS=linux,TARGETARCH=amd64'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -71,7 +87,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64
       cwd: _output
       repo: wod/containerd
-      version: v1.7.21
+      version: v1.7.22
       channel: arm64
       args: 'TARGETOS=linux,TARGETARCH=arm64'
       registry: registry.cn-qingdao.aliyuncs.com
@@ -83,9 +99,17 @@ steps:
   - name: golang-loong64
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix
     environment:
-      VERSION: v1.7.21-beagle
+      VERSION: v1.7.22-beagle
     commands:
       - bash ./.beagle/build-loong64.sh
+
+  - name: nerdctl-loong64
+    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v1.7.7-loong64
+    environment:
+      TARGET_ARCH: loong64
+    commands:
+      - mkdir -p _output/linux-$TARGET_ARCH
+      - cp /usr/local/bin/nerdctl _output/linux-$TARGET_ARCH/nerdctl
 
   - name: docker-loong64
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
@@ -97,7 +121,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v1.7.21
+      version: v1.7.22
       channel: loong64
       args: 'TARGETOS=linux,TARGETARCH=loong64'
       registry: registry.cn-qingdao.aliyuncs.com
