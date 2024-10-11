@@ -49,14 +49,6 @@ steps:
     commands:
       - bash ./.beagle/build-loong64.sh
 
-  - name: nerdctl-loong64
-    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.0-rc.2-loong64
-    environment:
-      TARGET_ARCH: loong64
-    commands:
-      - mkdir -p _output/linux/${TARGET_ARCH}
-      - cp /usr/local/bin/nerdctl _output/linux/${TARGET_ARCH}/nerdctl
-
   - name: nerdctl-amd64
     image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.0-rc.2-amd64
     environment:
