@@ -183,6 +183,10 @@ func (c *criService) CreateContainer(ctx context.Context, r *runtime.CreateConta
 	}
 	log.G(ctx).Debugf("Use OCI runtime %+v for sandbox %q and container %q", ociRuntime, sandboxID, id)
 
+	imageName := containerdImage.Name()
+	if name := config.GetImage().GetUserSpecifiedImage(); name != "" {
+		imageName = name
+	}
 	spec, err := c.buildContainerSpec(
 		platform,
 		id,
@@ -190,7 +194,7 @@ func (c *criService) CreateContainer(ctx context.Context, r *runtime.CreateConta
 		sandboxPid,
 		sandbox.NetNSPath,
 		containerName,
-		containerdImage.Name(),
+		imageName,
 		config,
 		sandboxConfig,
 		&image.ImageSpec.Config,
@@ -761,14 +765,10 @@ func (c *criService) buildLinuxSpec(
 		specOpts = append(specOpts, oci.WithRootFSReadonly())
 	}
 
-	if c.config.DisableCgroup {
-		specOpts = append(specOpts, customopts.WithDisabledCgroups)
-	} else {
-		specOpts = append(specOpts, customopts.WithResources(config.GetLinux().GetResources(), c.config.TolerateMissingHugetlbController, c.config.DisableHugetlbController))
-		if sandboxConfig.GetLinux().GetCgroupParent() != "" {
-			cgroupsPath := getCgroupsPath(sandboxConfig.GetLinux().GetCgroupParent(), id)
-			specOpts = append(specOpts, oci.WithCgroup(cgroupsPath))
-		}
+	specOpts = append(specOpts, customopts.WithResources(config.GetLinux().GetResources(), c.config.TolerateMissingHugetlbController, c.config.DisableHugetlbController))
+	if sandboxConfig.GetLinux().GetCgroupParent() != "" {
+		cgroupsPath := getCgroupsPath(sandboxConfig.GetLinux().GetCgroupParent(), id)
+		specOpts = append(specOpts, oci.WithCgroup(cgroupsPath))
 	}
 
 	supplementalGroups := securityContext.GetSupplementalGroups()
