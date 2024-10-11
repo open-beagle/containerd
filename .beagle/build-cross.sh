@@ -4,8 +4,6 @@ set -ex
 
 git config --global --add safe.directory $PWD
 
-apk add --no-cache file bash clang lld musl-dev pkgconfig git make
-
 export CGO_ENABLED=0
 export GO111MODULE=off
 export STATIC=true
