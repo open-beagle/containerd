@@ -15,25 +15,25 @@ git merge v2.0.0-rc.5
 ```bash
 # golang build cross
 docker run -it --rm \
-  -v $PWD/:/go/src/github.com/containerd/containerd \
-  -w /go/src/github.com/containerd/containerd \
-  -e VERSION=v2.0.0-rc.5.beagle \
+  -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+  -w /go/src/github.com/containerd/containerd/v2 \
+  -e VERSION=2.0.0-beagle-rc.5 \
   registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-alpine \
   bash .beagle/build-cross.sh
 
 # golang build
 docker run -it --rm \
-  -v $PWD/:/go/src/github.com/containerd/containerd \
-  -w /go/src/github.com/containerd/containerd \
-  -e VERSION=v2.0.0-rc.5.beagle \
+  -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+  -w /go/src/github.com/containerd/containerd/v2 \
+  -e VERSION=2.0.0-beagle-rc.5 \
   registry.cn-qingdao.aliyuncs.com/wod/golang:1.22 \
   bash .beagle/build.sh
 
 # golang build loong64
 docker run -it --rm \
-  -v $PWD/:/go/src/github.com/containerd/containerd \
-  -w /go/src/github.com/containerd/containerd \
-  -e VERSION=v2.0.0-rc.5.beagle \
+  -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+  -w /go/src/github.com/containerd/containerd/v2 \
+  -e VERSION=2.0.0-beagle-rc.5 \
   registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix \
   bash .beagle/build-loong64.sh
 ```
@@ -45,34 +45,34 @@ file _output/linux-amd64/containerd
 
 # amd64-test
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
+-v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+-w /go/src/github.com/containerd/containerd/v2 \
 registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-amd64 \
 ./_output/linux-amd64/containerd -v
 
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
+-v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+-w /go/src/github.com/containerd/containerd/v2 \
 registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64 \
 ./_output/linux-amd64/containerd -v
 
 # arm64-test
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
+-v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+-w /go/src/github.com/containerd/containerd/v2 \
 registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-arm64 \
 ./_output/linux-arm64/containerd -v
 
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
+-v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+-w /go/src/github.com/containerd/containerd/v2 \
 registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64 \
 ./_output/linux-arm64/containerd -v
 
 # loong64-test
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
+-v $PWD/:/go/src/github.com/containerd/containerd/v2 \
+-w /go/src/github.com/containerd/containerd/v2 \
 registry.cn-qingdao.aliyuncs.com/wod/alpine:3-loong64 \
 ./_output/linux-loong64/containerd -v
 ```
