@@ -7,27 +7,35 @@ git remote add upstream git@github.com:containerd/containerd.git
 
 git fetch upstream
 
-git merge v2.0.0-rc.4
+git merge v2.0.0-rc.5
 ```
 
 ## build
 
 ```bash
+# golang build cross
+docker run -it --rm \
+  -v $PWD/:/go/src/github.com/containerd/containerd \
+  -w /go/src/github.com/containerd/containerd \
+  -e VERSION=v2.0.0-rc.5.beagle \
+  registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-alpine \
+  bash .beagle/build-cross.sh
+
 # golang build
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
--e VERSION=v2.0.0-rc.4-beagle \
-registry.cn-qingdao.aliyuncs.com/wod/golang:1.22 \
-bash .beagle/build.sh
+  -v $PWD/:/go/src/github.com/containerd/containerd \
+  -w /go/src/github.com/containerd/containerd \
+  -e VERSION=v2.0.0-rc.5.beagle \
+  registry.cn-qingdao.aliyuncs.com/wod/golang:1.22 \
+  bash .beagle/build.sh
 
 # golang build loong64
 docker run -it --rm \
--v $PWD/:/go/src/github.com/containerd/containerd \
--w /go/src/github.com/containerd/containerd \
--e VERSION=v2.0.0-rc.4-beagle \
-registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix \
-bash .beagle/build-loong64.sh
+  -v $PWD/:/go/src/github.com/containerd/containerd \
+  -w /go/src/github.com/containerd/containerd \
+  -e VERSION=v2.0.0-rc.5.beagle \
+  registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix \
+  bash .beagle/build-loong64.sh
 ```
 
 ## test

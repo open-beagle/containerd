@@ -36,11 +36,11 @@ steps:
         from_secret: SOCKS5_PROXY
 
   - name: golang
-    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22
+    image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-alpine
     environment:
-      VERSION: v2.0.0-rc.4-beagle
+      VERSION: v2.0.0-rc.5.beagle
     commands:
-      - bash ./.beagle/build.sh
+      - bash ./.beagle/build-cross.sh
 
   - name: nerdctl-amd64
     image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.0-rc.2-amd64
@@ -68,7 +68,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v2.0.0-rc.4
+      version: v2.0.0-rc.5
       channel: amd64
       args: "TARGETOS=linux,TARGETARCH=amd64"
       registry: registry.cn-qingdao.aliyuncs.com
@@ -87,7 +87,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64
       cwd: _output
       repo: wod/containerd
-      version: v2.0.0-rc.4
+      version: v2.0.0-rc.5
       channel: arm64
       args: "TARGETOS=linux,TARGETARCH=arm64"
       registry: registry.cn-qingdao.aliyuncs.com
@@ -99,7 +99,7 @@ steps:
   - name: golang-loong64
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix
     environment:
-      VERSION: v2.0.0-rc.4-beagle
+      VERSION: v2.0.0-rc.5.beagle
     commands:
       - bash ./.beagle/build-loong64.sh
 
@@ -121,7 +121,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v2.0.0-rc.4
+      version: v2.0.0-rc.5
       channel: loong64
       args: "TARGETOS=linux,TARGETARCH=loong64"
       registry: registry.cn-qingdao.aliyuncs.com
