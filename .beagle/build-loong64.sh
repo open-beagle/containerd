@@ -11,6 +11,8 @@ export CGO_ENABLED=0
 export GO111MODULE=off
 export STATIC=true
 export BUILDTAGS="seccomp"
+export VERSION=${VERSION:-v2.0.0}
+export REVISION=$(git rev-parse --short HEAD)
 
 export GOARCH=loong64
 export CC=loongarch64-linux-gnu-gcc
