@@ -20,16 +20,19 @@ import (
 	"context"
 
 	snapshotsapi "github.com/containerd/containerd/api/services/snapshots/v1"
-	"github.com/containerd/containerd/v2/core/mount"
-	"github.com/containerd/containerd/v2/core/snapshots"
-	ptypes "github.com/containerd/containerd/v2/pkg/protobuf/types"
-	"github.com/containerd/containerd/v2/plugins"
-	"github.com/containerd/containerd/v2/plugins/services"
 	"github.com/containerd/errdefs"
+	"github.com/containerd/errdefs/pkg/errgrpc"
 	"github.com/containerd/log"
 	"github.com/containerd/plugin"
 	"github.com/containerd/plugin/registry"
 	"google.golang.org/grpc"
+
+	"github.com/containerd/containerd/v2/core/mount"
+	"github.com/containerd/containerd/v2/core/snapshots"
+	"github.com/containerd/containerd/v2/core/snapshots/proxy"
+	ptypes "github.com/containerd/containerd/v2/pkg/protobuf/types"
+	"github.com/containerd/containerd/v2/plugins"
+	"github.com/containerd/containerd/v2/plugins/services"
 )
 
 func init() {
@@ -60,12 +63,12 @@ func newService(ic *plugin.InitContext) (interface{}, error) {
 
 func (s *service) getSnapshotter(name string) (snapshots.Snapshotter, error) {
 	if name == "" {
-		return nil, errdefs.ToGRPCf(errdefs.ErrInvalidArgument, "snapshotter argument missing")
+		return nil, errgrpc.ToGRPCf(errdefs.ErrInvalidArgument, "snapshotter argument missing")
 	}
 
 	sn := s.ss[name]
 	if sn == nil {
-		return nil, errdefs.ToGRPCf(errdefs.ErrInvalidArgument, "snapshotter not loaded: %s", name)
+		return nil, errgrpc.ToGRPCf(errdefs.ErrInvalidArgument, "snapshotter not loaded: %s", name)
 	}
 	return sn, nil
 }
@@ -88,7 +91,7 @@ func (s *service) Prepare(ctx context.Context, pr *snapshotsapi.PrepareSnapshotR
 	}
 	mounts, err := sn.Prepare(ctx, pr.Key, pr.Parent, opts...)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
 	return &snapshotsapi.PrepareSnapshotResponse{
@@ -108,7 +111,7 @@ func (s *service) View(ctx context.Context, pr *snapshotsapi.ViewSnapshotRequest
 	}
 	mounts, err := sn.View(ctx, pr.Key, pr.Parent, opts...)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 	return &snapshotsapi.ViewSnapshotResponse{
 		Mounts: mount.ToProto(mounts),
@@ -124,7 +127,7 @@ func (s *service) Mounts(ctx context.Context, mr *snapshotsapi.MountsRequest) (*
 
 	mounts, err := sn.Mounts(ctx, mr.Key)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 	return &snapshotsapi.MountsResponse{
 		Mounts: mount.ToProto(mounts),
@@ -143,7 +146,7 @@ func (s *service) Commit(ctx context.Context, cr *snapshotsapi.CommitSnapshotReq
 		opts = append(opts, snapshots.WithLabels(cr.Labels))
 	}
 	if err := sn.Commit(ctx, cr.Name, cr.Key, opts...); err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
 	return empty, nil
@@ -157,7 +160,7 @@ func (s *service) Remove(ctx context.Context, rr *snapshotsapi.RemoveSnapshotReq
 	}
 
 	if err := sn.Remove(ctx, rr.Key); err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
 	return empty, nil
@@ -172,10 +175,10 @@ func (s *service) Stat(ctx context.Context, sr *snapshotsapi.StatSnapshotRequest
 
 	info, err := sn.Stat(ctx, sr.Key)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
-	return &snapshotsapi.StatSnapshotResponse{Info: snapshots.InfoToProto(info)}, nil
+	return &snapshotsapi.StatSnapshotResponse{Info: proxy.InfoToProto(info)}, nil
 }
 
 func (s *service) Update(ctx context.Context, sr *snapshotsapi.UpdateSnapshotRequest) (*snapshotsapi.UpdateSnapshotResponse, error) {
@@ -185,12 +188,12 @@ func (s *service) Update(ctx context.Context, sr *snapshotsapi.UpdateSnapshotReq
 		return nil, err
 	}
 
-	info, err := sn.Update(ctx, snapshots.InfoFromProto(sr.Info), sr.UpdateMask.GetPaths()...)
+	info, err := sn.Update(ctx, proxy.InfoFromProto(sr.Info), sr.UpdateMask.GetPaths()...)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
-	return &snapshotsapi.UpdateSnapshotResponse{Info: snapshots.InfoToProto(info)}, nil
+	return &snapshotsapi.UpdateSnapshotResponse{Info: proxy.InfoToProto(info)}, nil
 }
 
 func (s *service) List(sr *snapshotsapi.ListSnapshotsRequest, ss snapshotsapi.Snapshots_ListServer) error {
@@ -208,7 +211,7 @@ func (s *service) List(sr *snapshotsapi.ListSnapshotsRequest, ss snapshotsapi.Sn
 		}
 	)
 	err = sn.Walk(ss.Context(), func(ctx context.Context, info snapshots.Info) error {
-		buffer = append(buffer, snapshots.InfoToProto(info))
+		buffer = append(buffer, proxy.InfoToProto(info))
 
 		if len(buffer) >= 100 {
 			if err := sendBlock(buffer); err != nil {
@@ -241,10 +244,10 @@ func (s *service) Usage(ctx context.Context, ur *snapshotsapi.UsageRequest) (*sn
 
 	usage, err := sn.Usage(ctx, ur.Key)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
-	return snapshots.UsageToProto(usage), nil
+	return proxy.UsageToProto(usage), nil
 }
 
 func (s *service) Cleanup(ctx context.Context, cr *snapshotsapi.CleanupRequest) (*ptypes.Empty, error) {
@@ -255,12 +258,12 @@ func (s *service) Cleanup(ctx context.Context, cr *snapshotsapi.CleanupRequest) 
 
 	c, ok := sn.(snapshots.Cleaner)
 	if !ok {
-		return nil, errdefs.ToGRPCf(errdefs.ErrNotImplemented, "snapshotter does not implement Cleanup method")
+		return nil, errgrpc.ToGRPCf(errdefs.ErrNotImplemented, "snapshotter does not implement Cleanup method")
 	}
 
 	err = c.Cleanup(ctx)
 	if err != nil {
-		return nil, errdefs.ToGRPC(err)
+		return nil, errgrpc.ToGRPC(err)
 	}
 
 	return empty, nil
