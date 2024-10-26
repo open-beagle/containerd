@@ -83,7 +83,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v2.0.0-rc.5
+      version: v2.0.0-rc.6
       channel: amd64
       args: "TARGETOS=linux,TARGETARCH=amd64"
       registry: registry.cn-qingdao.aliyuncs.com
@@ -102,7 +102,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64
       cwd: _output
       repo: wod/containerd
-      version: v2.0.0-rc.5
+      version: v2.0.0-rc.6
       channel: arm64
       args: "TARGETOS=linux,TARGETARCH=arm64"
       registry: registry.cn-qingdao.aliyuncs.com
@@ -121,7 +121,7 @@ steps:
       base: registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64
       cwd: _output
       repo: wod/containerd
-      version: v2.0.0-rc.5
+      version: v2.0.0-rc.6
       channel: loong64
       args: "TARGETOS=linux,TARGETARCH=loong64"
       registry: registry.cn-qingdao.aliyuncs.com
