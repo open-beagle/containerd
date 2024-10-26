@@ -7,7 +7,7 @@ git remote add upstream git@github.com:containerd/containerd.git
 
 git fetch upstream
 
-git merge v2.0.0-rc.5
+git merge v2.0.0-rc.6
 ```
 
 ## build
@@ -17,7 +17,7 @@ git merge v2.0.0-rc.5
 docker run -it --rm \
   -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
   -w /go/src/github.com/containerd/containerd/v2 \
-  -e VERSION=2.0.0-beagle-rc.5 \
+  -e VERSION=2.0.0-beagle-rc.6 \
   registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-alpine \
   bash .beagle/build-cross.sh
 
@@ -25,7 +25,7 @@ docker run -it --rm \
 docker run -it --rm \
   -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
   -w /go/src/github.com/containerd/containerd/v2 \
-  -e VERSION=2.0.0-beagle-rc.5 \
+  -e VERSION=2.0.0-beagle-rc.6 \
   registry.cn-qingdao.aliyuncs.com/wod/golang:1.22 \
   bash .beagle/build.sh
 
@@ -33,7 +33,7 @@ docker run -it --rm \
 docker run -it --rm \
   -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
   -w /go/src/github.com/containerd/containerd/v2 \
-  -e VERSION=2.0.0-beagle-rc.5 \
+  -e VERSION=2.0.0-beagle-rc.6 \
   registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix \
   bash .beagle/build-loong64.sh
 ```

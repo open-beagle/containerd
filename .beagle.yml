@@ -38,14 +38,14 @@ steps:
   - name: golang
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-alpine
     environment:
-      VERSION: 2.0.0-beagle-rc.5
+      VERSION: 2.0.0-beagle-rc.6
     commands:
       - bash ./.beagle/build-cross.sh
 
   - name: golang-loong64
     image: registry.cn-qingdao.aliyuncs.com/wod/golang:1.22-loongnix
     environment:
-      VERSION: 2.0.0-beagle-rc.5
+      VERSION: 2.0.0-beagle-rc.6
     commands:
       - bash ./.beagle/build-loong64.sh
 
