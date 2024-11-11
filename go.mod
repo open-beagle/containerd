@@ -4,30 +4,31 @@ go 1.22.0
 
 require (
 	dario.cat/mergo v1.0.1
-	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24
-	github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20230306123547-8075edf89bb0
+	github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6
+	github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20231105174938-2b5cbb29f3e2
 	github.com/Microsoft/go-winio v0.6.2
-	github.com/Microsoft/hcsshim v0.12.8
-	github.com/checkpoint-restore/checkpointctl v1.2.1
+	github.com/Microsoft/hcsshim v0.12.9
+	github.com/checkpoint-restore/checkpointctl v1.3.0
 	github.com/checkpoint-restore/go-criu/v7 v7.2.0
 	github.com/containerd/btrfs/v2 v2.0.0
 	github.com/containerd/cgroups/v3 v3.0.3
 	github.com/containerd/console v1.0.4
-	github.com/containerd/containerd/api v1.8.0-rc.4
-	github.com/containerd/continuity v0.4.3
-	github.com/containerd/errdefs v0.3.0
+	github.com/containerd/containerd/api v1.8.0
+	github.com/containerd/continuity v0.4.4
+	github.com/containerd/errdefs v1.0.0
 	github.com/containerd/errdefs/pkg v0.3.0
 	github.com/containerd/fifo v1.1.0
 	github.com/containerd/go-cni v1.1.10
 	github.com/containerd/go-runc v1.1.0
-	github.com/containerd/imgcrypt v1.2.0-rc1
+	github.com/containerd/imgcrypt/v2 v2.0.0-rc.1
 	github.com/containerd/log v0.1.0
-	github.com/containerd/nri v0.7.0
+	github.com/containerd/nri v0.8.0
 	github.com/containerd/otelttrpc v0.0.0-20240305015340-ea5083fda723
-	github.com/containerd/platforms v0.2.1
-	github.com/containerd/plugin v0.1.0
-	github.com/containerd/ttrpc v1.2.6-0.20240827082320-b5cd6e4b3287
-	github.com/containerd/typeurl/v2 v2.2.0
+	github.com/containerd/platforms v1.0.0-rc.0
+	github.com/containerd/plugin v1.0.0
+	github.com/containerd/ttrpc v1.2.6
+	github.com/containerd/typeurl/v2 v2.2.2
+	github.com/containerd/zfs/v2 v2.0.0-rc.0
 	github.com/containernetworking/cni v1.2.3
 	github.com/containernetworking/plugins v1.5.1
 	github.com/coreos/go-systemd/v22 v22.5.0
@@ -74,15 +75,15 @@ require (
 	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
 	golang.org/x/sys v0.26.0
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241007155032-5fefd90f89a9
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241021214115-324edc3d5d38
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
-	k8s.io/apimachinery v0.31.1
-	k8s.io/client-go v0.31.1
-	k8s.io/component-base v0.31.1
-	k8s.io/cri-api v0.32.0-alpha.0
+	k8s.io/apimachinery v0.31.2
+	k8s.io/client-go v0.31.2
+	k8s.io/component-base v0.31.2
+	k8s.io/cri-api v0.31.2
 	k8s.io/klog/v2 v2.130.1
-	k8s.io/kubelet v0.31.1
+	k8s.io/kubelet v0.31.2
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 	tags.cncf.io/container-device-interface v0.8.0
 )
@@ -92,13 +93,12 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cilium/ebpf v0.11.0 // indirect
-	github.com/containerd/containerd v1.7.23 // indirect
 	github.com/containers/ocicrypt v1.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
-	github.com/go-jose/go-jose/v4 v4.0.2 // indirect
+	github.com/go-jose/go-jose/v4 v4.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
@@ -112,6 +112,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mdlayher/socket v0.4.1 // indirect
 	github.com/miekg/pkcs11 v1.1.1 // indirect
+	github.com/mistifyio/go-zfs/v3 v3.0.1 // indirect
 	github.com/moby/spdystream v0.4.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -128,7 +129,7 @@ require (
 	github.com/vishvananda/netns v0.0.4 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
-	go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1 // indirect
+	go.mozilla.org/pkcs7 v0.9.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel/metric v1.31.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
@@ -143,8 +144,8 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.31.1 // indirect
-	k8s.io/apiserver v0.31.1 // indirect
+	k8s.io/api v0.31.2 // indirect
+	k8s.io/apiserver v0.31.2 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect

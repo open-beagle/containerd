@@ -1,10 +1,10 @@
 # dario.cat/mergo v1.0.1
 ## explicit; go 1.13
 dario.cat/mergo
-# github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24
+# github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6
 ## explicit; go 1.20
 github.com/AdaLogics/go-fuzz-headers
-# github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20230306123547-8075edf89bb0
+# github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20231105174938-2b5cbb29f3e2
 ## explicit; go 1.18
 github.com/AdamKorcz/go-118-fuzz-build/testing
 # github.com/Microsoft/go-winio v0.6.2
@@ -21,8 +21,8 @@ github.com/Microsoft/go-winio/pkg/fs
 github.com/Microsoft/go-winio/pkg/guid
 github.com/Microsoft/go-winio/pkg/security
 github.com/Microsoft/go-winio/vhd
-# github.com/Microsoft/hcsshim v0.12.8
-## explicit; go 1.21
+# github.com/Microsoft/hcsshim v0.12.9
+## explicit; go 1.22
 github.com/Microsoft/hcsshim
 github.com/Microsoft/hcsshim/cmd/containerd-shim-runhcs-v1/options
 github.com/Microsoft/hcsshim/cmd/containerd-shim-runhcs-v1/stats
@@ -74,7 +74,7 @@ github.com/cenkalti/backoff/v4
 # github.com/cespare/xxhash/v2 v2.3.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
-# github.com/checkpoint-restore/checkpointctl v1.2.1
+# github.com/checkpoint-restore/checkpointctl v1.3.0
 ## explicit; go 1.21
 github.com/checkpoint-restore/checkpointctl/lib
 # github.com/checkpoint-restore/go-criu/v7 v7.2.0
@@ -105,10 +105,7 @@ github.com/containerd/cgroups/v3/cgroup2/stats
 # github.com/containerd/console v1.0.4
 ## explicit; go 1.13
 github.com/containerd/console
-# github.com/containerd/containerd v1.7.23
-## explicit; go 1.21
-github.com/containerd/containerd/errdefs
-# github.com/containerd/containerd/api v1.8.0-rc.4
+# github.com/containerd/containerd/api v1.8.0
 ## explicit; go 1.21
 github.com/containerd/containerd/api/events
 github.com/containerd/containerd/api/runtime/sandbox/v1
@@ -134,8 +131,8 @@ github.com/containerd/containerd/api/types/runc/options
 github.com/containerd/containerd/api/types/runtimeoptions/v1
 github.com/containerd/containerd/api/types/task
 github.com/containerd/containerd/api/types/transfer
-# github.com/containerd/continuity v0.4.3
-## explicit; go 1.19
+# github.com/containerd/continuity v0.4.4
+## explicit; go 1.21
 github.com/containerd/continuity
 github.com/containerd/continuity/devices
 github.com/containerd/continuity/driver
@@ -146,7 +143,7 @@ github.com/containerd/continuity/proto
 github.com/containerd/continuity/sysx
 github.com/containerd/continuity/testutil
 github.com/containerd/continuity/testutil/loopback
-# github.com/containerd/errdefs v0.3.0
+# github.com/containerd/errdefs v1.0.0
 ## explicit; go 1.20
 github.com/containerd/errdefs
 # github.com/containerd/errdefs/pkg v0.3.0
@@ -163,15 +160,15 @@ github.com/containerd/go-cni
 # github.com/containerd/go-runc v1.1.0
 ## explicit; go 1.18
 github.com/containerd/go-runc
-# github.com/containerd/imgcrypt v1.2.0-rc1
+# github.com/containerd/imgcrypt/v2 v2.0.0-rc.1
 ## explicit; go 1.22.0
-github.com/containerd/imgcrypt
-github.com/containerd/imgcrypt/images/encryption
+github.com/containerd/imgcrypt/v2
+github.com/containerd/imgcrypt/v2/images/encryption
 # github.com/containerd/log v0.1.0
 ## explicit; go 1.20
 github.com/containerd/log
 github.com/containerd/log/logtest
-# github.com/containerd/nri v0.7.0
+# github.com/containerd/nri v0.8.0
 ## explicit; go 1.21
 github.com/containerd/nri
 github.com/containerd/nri/pkg/adaptation
@@ -186,20 +183,24 @@ github.com/containerd/nri/types/v1
 ## explicit; go 1.13
 github.com/containerd/otelttrpc
 github.com/containerd/otelttrpc/internal
-# github.com/containerd/platforms v0.2.1
+# github.com/containerd/platforms v1.0.0-rc.0
 ## explicit; go 1.20
 github.com/containerd/platforms
-# github.com/containerd/plugin v0.1.0
+# github.com/containerd/plugin v1.0.0
 ## explicit; go 1.20
 github.com/containerd/plugin
 github.com/containerd/plugin/dynamic
 github.com/containerd/plugin/registry
-# github.com/containerd/ttrpc v1.2.6-0.20240827082320-b5cd6e4b3287
+# github.com/containerd/ttrpc v1.2.6
 ## explicit; go 1.19
 github.com/containerd/ttrpc
-# github.com/containerd/typeurl/v2 v2.2.0
+# github.com/containerd/typeurl/v2 v2.2.2
 ## explicit; go 1.21
 github.com/containerd/typeurl/v2
+# github.com/containerd/zfs/v2 v2.0.0-rc.0
+## explicit; go 1.22.0
+github.com/containerd/zfs/v2
+github.com/containerd/zfs/v2/plugin
 # github.com/containernetworking/cni v1.2.3
 ## explicit; go 1.21
 github.com/containernetworking/cni/libcni
@@ -268,7 +269,7 @@ github.com/fsnotify/fsnotify
 # github.com/fxamacker/cbor/v2 v2.7.0
 ## explicit; go 1.17
 github.com/fxamacker/cbor/v2
-# github.com/go-jose/go-jose/v4 v4.0.2
+# github.com/go-jose/go-jose/v4 v4.0.4
 ## explicit; go 1.21
 github.com/go-jose/go-jose/v4
 github.com/go-jose/go-jose/v4/cipher
@@ -352,6 +353,9 @@ github.com/mdlayher/vsock
 # github.com/miekg/pkcs11 v1.1.1
 ## explicit; go 1.12
 github.com/miekg/pkcs11
+# github.com/mistifyio/go-zfs/v3 v3.0.1
+## explicit; go 1.14
+github.com/mistifyio/go-zfs/v3
 # github.com/moby/locker v1.0.1
 ## explicit; go 1.13
 github.com/moby/locker
@@ -482,7 +486,7 @@ github.com/xrash/smetrics
 # go.etcd.io/bbolt v1.3.11
 ## explicit; go 1.22
 go.etcd.io/bbolt
-# go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1
+# go.mozilla.org/pkcs7 v0.9.0
 ## explicit; go 1.11
 go.mozilla.org/pkcs7
 # go.opencensus.io v0.24.0
@@ -625,7 +629,7 @@ golang.org/x/time/rate
 # google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9
 ## explicit; go 1.21
 google.golang.org/genproto/googleapis/api/httpbody
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20241007155032-5fefd90f89a9
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20241021214115-324edc3d5d38
 ## explicit; go 1.21
 google.golang.org/genproto/googleapis/rpc/code
 google.golang.org/genproto/googleapis/rpc/errdetails
@@ -749,10 +753,10 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
-# k8s.io/api v0.31.1
+# k8s.io/api v0.31.2
 ## explicit; go 1.22.0
 k8s.io/api/core/v1
-# k8s.io/apimachinery v0.31.1
+# k8s.io/apimachinery v0.31.2
 ## explicit; go 1.22.0
 k8s.io/apimachinery/pkg/api/errors
 k8s.io/apimachinery/pkg/api/meta
@@ -798,10 +802,10 @@ k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/netutil
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/apiserver v0.31.1
+# k8s.io/apiserver v0.31.2
 ## explicit; go 1.22.0
 k8s.io/apiserver/pkg/endpoints/responsewriter
-# k8s.io/client-go v0.31.1
+# k8s.io/client-go v0.31.2
 ## explicit; go 1.22.0
 k8s.io/client-go/features
 k8s.io/client-go/pkg/apis/clientauthentication
@@ -824,10 +828,10 @@ k8s.io/client-go/util/exec
 k8s.io/client-go/util/flowcontrol
 k8s.io/client-go/util/keyutil
 k8s.io/client-go/util/workqueue
-# k8s.io/component-base v0.31.1
+# k8s.io/component-base v0.31.2
 ## explicit; go 1.22.0
 k8s.io/component-base/logs/logreduction
-# k8s.io/cri-api v0.32.0-alpha.0
+# k8s.io/cri-api v0.31.2
 ## explicit; go 1.22.0
 k8s.io/cri-api/pkg/apis/runtime/v1
 k8s.io/cri-api/pkg/errors
@@ -840,7 +844,7 @@ k8s.io/klog/v2/internal/dbg
 k8s.io/klog/v2/internal/serialize
 k8s.io/klog/v2/internal/severity
 k8s.io/klog/v2/internal/sloghandler
-# k8s.io/kubelet v0.31.1
+# k8s.io/kubelet v0.31.2
 ## explicit; go 1.22.0
 k8s.io/kubelet/pkg/cri/streaming
 k8s.io/kubelet/pkg/cri/streaming/portforward
