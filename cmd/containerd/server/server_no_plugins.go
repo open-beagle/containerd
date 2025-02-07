@@ -1,4 +1,4 @@
-//go:build !windows
+//go:build no_dynamic_plugins
 
 /*
    Copyright The containerd Authors.
@@ -16,15 +16,9 @@
    limitations under the License.
 */
 
-package platforms
+package server
 
-import (
-	specs "github.com/opencontainers/image-spec/specs-go/v1"
-)
-
-// NewMatcher returns the default Matcher for containerd
-func newDefaultMatcher(platform specs.Platform) Matcher {
-	return &matcher{
-		Platform: Normalize(platform),
-	}
+func loadDynamic(string) (loaded int, _ error) {
+	// dynamic plugins disabled through no_dynamic_plugins build-tag
+	return 0, nil
 }

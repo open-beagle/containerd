@@ -1,3 +1,5 @@
+//go:build !no_dynamic_plugins
+
 /*
    Copyright The containerd Authors.
 
@@ -14,21 +16,10 @@
    limitations under the License.
 */
 
-package platforms
+package server
 
-import (
-	specs "github.com/opencontainers/image-spec/specs-go/v1"
-)
+import "github.com/containerd/plugin/dynamic"
 
-// NewMatcher returns a Windows matcher that will match on osVersionPrefix if
-// the platform is Windows otherwise use the default matcher
-func newDefaultMatcher(platform specs.Platform) Matcher {
-	prefix := prefix(platform.OSVersion)
-	return windowsmatcher{
-		Platform:        platform,
-		osVersionPrefix: prefix,
-		defaultMatcher: &matcher{
-			Platform: Normalize(platform),
-		},
-	}
+func loadDynamic(path string) (loaded int, _ error) {
+	return dynamic.Load(path)
 }
