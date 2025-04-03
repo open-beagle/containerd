@@ -50,7 +50,7 @@ steps:
       - bash ./.beagle/build-loong64.sh
 
   - name: nerdctl-amd64
-    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.2-amd64
+    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.3-amd64
     environment:
       TARGET_ARCH: amd64
     commands:
@@ -58,7 +58,7 @@ steps:
       - cp /usr/local/bin/nerdctl _output/linux/$TARGET_ARCH/nerdctl
 
   - name: nerdctl-arm64
-    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.2-arm64
+    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.3-arm64
     environment:
       TARGET_ARCH: arm64
     commands:
@@ -66,7 +66,7 @@ steps:
       - cp /usr/local/bin/nerdctl _output/linux/$TARGET_ARCH/nerdctl
 
   - name: nerdctl-loong64
-    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.2-loong64
+    image: registry.cn-qingdao.aliyuncs.com/wod/nerdctl:v2.0.3-loong64
     environment:
       TARGET_ARCH: loong64
     commands:
