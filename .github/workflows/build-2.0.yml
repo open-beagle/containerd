@@ -33,7 +33,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
             -e BUILD_VERSION=${{ env.BUILD_VERSION }} \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:1.23 \
+            ${{ env.REGISTRY_ALIYUN }}/wod/golang:1.23-alpine \
             bash -c "bash ./.beagle/build-cross.sh"
 
       - name: Loong64 Build
