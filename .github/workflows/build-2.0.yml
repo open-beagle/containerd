@@ -53,7 +53,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
             ${{ env.REGISTRY_ALIYUN }}/wod/nerdctl:v2.0.3-${{ env.TARGET_ARCH }} \
-            bash -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
+            sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
 
       - name: nerdctl-arm64
         env:
@@ -62,7 +62,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
             ${{ env.REGISTRY_ALIYUN }}/wod/nerdctl:v2.0.3-${{ env.TARGET_ARCH }} \
-            bash -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
+            sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
 
       - name: nerdctl-loong64
         env:
@@ -71,7 +71,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
             ${{ env.REGISTRY_ALIYUN }}/wod/nerdctl:v2.0.3-${{ env.TARGET_ARCH }} \
-            bash -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
+            sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
