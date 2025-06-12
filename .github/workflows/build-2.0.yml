@@ -46,6 +46,9 @@ jobs:
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:1.23-loongnix \
             bash .beagle/build-loong64.sh
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: nerdctl-amd64
         env:
           TARGET_ARCH: amd64
