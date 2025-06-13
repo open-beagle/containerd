@@ -36,16 +36,6 @@ jobs:
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:1.23-alpine \
             bash -c "bash ./.beagle/build-cross.sh"
 
-      - name: Loong64 Build
-        env:
-          BUILD_VERSION: ${{ env.BUILD_VERSION }}
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
-            -w /go/src/github.com/containerd/containerd/v2 \
-            -e BUILD_VERSION=${{ env.BUILD_VERSION }} \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:1.23-loongnix \
-            bash .beagle/build-loong64.sh
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -61,15 +51,6 @@ jobs:
       - name: nerdctl-arm64
         env:
           TARGET_ARCH: arm64
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
-            -w /go/src/github.com/containerd/containerd/v2 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/nerdctl:v2.0.3-${{ env.TARGET_ARCH }} \
-            sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
-
-      - name: nerdctl-loong64
-        env:
-          TARGET_ARCH: loong64
         run: |
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
@@ -113,27 +94,9 @@ jobs:
           provenance: false
           sbom: false
 
-      - name: Build and push images for loong64
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: .beagle/dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-loong64
-          build-args: |
-            BASE=alpine:3
-            VERSION=${{ env.BUILD_VERSION }}
-            TARGETOS=linux
-            TARGETARCH=loong64
-          provenance: false
-          sbom: false
-
       - name: Create and push multi-arch manifest
         run: |
           docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }} \
             ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-arm64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-loong64
+            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-arm64
           docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}

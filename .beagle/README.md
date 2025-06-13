@@ -68,13 +68,6 @@ docker run -it --rm \
   -w /go/src/github.com/containerd/containerd/v2 \
   registry.cn-qingdao.aliyuncs.com/wod/alpine:3-arm64 \
   ./_output/linux-arm64/containerd -v
-
-# loong64-test
-docker run -it --rm \
-  -v $PWD/:/go/src/github.com/containerd/containerd/v2 \
-  -w /go/src/github.com/containerd/containerd/v2 \
-  registry.cn-qingdao.aliyuncs.com/wod/alpine:3-loong64 \
-  ./_output/linux-loong64/containerd -v
 ```
 
 ## cache
