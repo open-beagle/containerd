@@ -67,7 +67,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-amd64
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-amd64
           build-args: |
             BASE=alpine:3
             VERSION=${{ env.BUILD_VERSION }}
@@ -84,7 +84,7 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-arm64
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-arm64
           build-args: |
             BASE=alpine:3
             AUTHOR=${{ github.actor }}
@@ -96,7 +96,7 @@ jobs:
 
       - name: Create and push multi-arch manifest
         run: |
-          docker manifest create ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }} \
-            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-amd64 \
-            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-arm64
-          docker manifest push ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}
+          docker manifest create ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }} \
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-amd64 \
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-arm64
+          docker manifest push ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}
