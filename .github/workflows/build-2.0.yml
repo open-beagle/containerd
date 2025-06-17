@@ -7,9 +7,8 @@ on:
   workflow_dispatch: # 允许手动触发
 
 env:
-  REGISTRY_ALIYUN: registry.cn-qingdao.aliyuncs.com
   BUILD_VERSION: v2.0.5
-  NERDCTL_VERSION: v2.0.3
+  NERDCTL_VERSION: v2.0.5
 
 jobs:
   build:
@@ -19,12 +18,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Container Registry
-        uses: docker/login-action@v3
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY_ALIYUN }}
-          username: ${{ secrets.REGISTRY_USER_ALIYUN }}
-          password: ${{ secrets.REGISTRY_PASSWORD_ALIYUN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cross Build
         env:
@@ -33,7 +32,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
             -e BUILD_VERSION=${{ env.BUILD_VERSION }} \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:1.23-alpine \
+            ghcr.io/${{ github.repository_owner }}/golang:1.23-alpine \
             bash -c "bash ./.beagle/build-cross.sh"
 
       - name: Set up QEMU
@@ -45,7 +44,7 @@ jobs:
         run: |
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/nerdctl:v2.0.3-${{ env.TARGET_ARCH }} \
+            ghcr.io/${{ github.repository_owner }}/nerdctl:${{ env.NERDCTL_VERSION}}-${{ env.TARGET_ARCH }} \
             sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
 
       - name: nerdctl-arm64
@@ -54,7 +53,7 @@ jobs:
         run: |
           docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
             -w /go/src/github.com/containerd/containerd/v2 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/nerdctl:v2.0.3-${{ env.TARGET_ARCH }} \
+            ghcr.io/${{ github.repository_owner }}/nerdctl:${{ env.NERDCTL_VERSION}}-${{ env.TARGET_ARCH }} \
             sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
 
       - name: Set up Docker Buildx
@@ -68,7 +67,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-amd64
+            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-amd64
           build-args: |
             BASE=alpine:3
             VERSION=${{ env.BUILD_VERSION }}
@@ -85,9 +84,10 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-arm64
+            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-arm64
           build-args: |
             BASE=alpine:3
+            AUTHOR=${{ github.actor }}
             VERSION=${{ env.BUILD_VERSION }}
             TARGETOS=linux
             TARGETARCH=arm64
@@ -96,7 +96,7 @@ jobs:
 
       - name: Create and push multi-arch manifest
         run: |
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }} \
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/containerd:${{ env.BUILD_VERSION }}
+          docker manifest create ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }} \
+            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-amd64 \
+            ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}-arm64
+          docker manifest push ghcr.io/${{ github.repository }}/containerd:${{ env.BUILD_VERSION }}
