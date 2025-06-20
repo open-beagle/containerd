@@ -1,0 +1,102 @@
+name: Build Release v2.1 Images
+
+on:
+  push:
+    branches:
+      - release-v2.1
+  workflow_dispatch: # 允许手动触发
+
+env:
+  BUILD_VERSION: v2.1.3
+  NERDCTL_VERSION: v2.1.2
+
+jobs:
+  build:
+    name: Build Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cross Build
+        env:
+          BUILD_VERSION: ${{ env.BUILD_VERSION }}
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
+            -w /go/src/github.com/containerd/containerd/v2 \
+            -e BUILD_VERSION=${{ env.BUILD_VERSION }}-beagle \
+            ghcr.io/${{ github.repository_owner }}/golang:1.24-alpine \
+            bash -c "bash ./.beagle/build-cross.sh"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: nerdctl-amd64
+        env:
+          TARGET_ARCH: amd64
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
+            -w /go/src/github.com/containerd/containerd/v2 \
+            ghcr.io/${{ github.repository_owner }}/nerdctl:${{ env.NERDCTL_VERSION}}-${{ env.TARGET_ARCH }} \
+            sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
+
+      - name: nerdctl-arm64
+        env:
+          TARGET_ARCH: arm64
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/go/src/github.com/containerd/containerd/v2 \
+            -w /go/src/github.com/containerd/containerd/v2 \
+            ghcr.io/${{ github.repository_owner }}/nerdctl:${{ env.NERDCTL_VERSION}}-${{ env.TARGET_ARCH }} \
+            sh -c "mkdir -p _output/linux/${{ env.TARGET_ARCH }} && cp /usr/local/bin/nerdctl _output/linux/${{ env.TARGET_ARCH }}/nerdctl"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push images for amd64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .beagle/dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-amd64
+          build-args: |
+            BASE=alpine:3
+            VERSION=${{ env.BUILD_VERSION }}
+            TARGETOS=linux
+            TARGETARCH=amd64
+          provenance: false
+          sbom: false
+
+      - name: Build and push images for arm64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .beagle/dockerfile
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-arm64
+          build-args: |
+            BASE=alpine:3
+            AUTHOR=${{ github.actor }}
+            VERSION=${{ env.BUILD_VERSION }}
+            TARGETOS=linux
+            TARGETARCH=arm64
+          provenance: false
+          sbom: false
+
+      - name: Create and push multi-arch manifest
+        run: |
+          docker manifest create ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }} \
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-amd64 \
+            ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}-arm64
+          docker manifest push ghcr.io/${{ github.repository_owner }}/containerd:${{ env.BUILD_VERSION }}
