@@ -10,4 +10,4 @@ LABEL maintainer=${AUTHOR} version=${VERSION}
 ARG TARGETOS
 ARG TARGETARCH
 
-COPY ./_output/${TARGETOS}/${TARGETARCH}/ /usr/local/bin/
+COPY ./_output/${TARGETOS}-${TARGETARCH}/ /opt/containerd/bin/
