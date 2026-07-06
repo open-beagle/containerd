@@ -25,6 +25,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/containerd/log"
+	"github.com/containerd/platforms"
+	"github.com/containerd/typeurl/v2"
+	"github.com/davecgh/go-spew/spew"
+	imagespec "github.com/opencontainers/image-spec/specs-go/v1"
+	runtimespec "github.com/opencontainers/runtime-spec/specs-go"
+	"github.com/opencontainers/selinux/go-selinux"
+	"github.com/opencontainers/selinux/go-selinux/label"
+	runtime "k8s.io/cri-api/pkg/apis/runtime/v1"
+
 	containerd "github.com/containerd/containerd/v2/client"
 	"github.com/containerd/containerd/v2/core/containers"
 	"github.com/containerd/containerd/v2/internal/cri/annotations"
@@ -35,19 +45,10 @@ import (
 	containerstore "github.com/containerd/containerd/v2/internal/cri/store/container"
 	"github.com/containerd/containerd/v2/internal/cri/store/sandbox"
 	"github.com/containerd/containerd/v2/internal/cri/util"
+	"github.com/containerd/containerd/v2/internal/registrar"
 	"github.com/containerd/containerd/v2/pkg/blockio"
 	"github.com/containerd/containerd/v2/pkg/oci"
 	"github.com/containerd/containerd/v2/pkg/tracing"
-	"github.com/containerd/log"
-	"github.com/containerd/platforms"
-	"github.com/containerd/typeurl/v2"
-	"github.com/davecgh/go-spew/spew"
-	imagespec "github.com/opencontainers/image-spec/specs-go/v1"
-	v1 "github.com/opencontainers/image-spec/specs-go/v1"
-	runtimespec "github.com/opencontainers/runtime-spec/specs-go"
-	"github.com/opencontainers/selinux/go-selinux"
-	"github.com/opencontainers/selinux/go-selinux/label"
-	runtime "k8s.io/cri-api/pkg/apis/runtime/v1"
 )
 
 func init() {
@@ -91,6 +92,11 @@ func (c *criService) CreateContainer(ctx context.Context, r *runtime.CreateConta
 	name := makeContainerName(metadata, sandboxConfig.GetMetadata())
 	log.G(ctx).Debugf("Generated id %q for container %q", id, name)
 	if err = c.containerNameIndex.Reserve(name, id); err != nil {
+		var resErr *registrar.ReservedErr
+		if errors.As(err, &resErr) {
+			log.G(ctx).WithError(err).Warn("possible concurrent CreateContainer request")
+			return nil, fmt.Errorf("failed to reserve container name %q; check if another CreateContainer request is in progress: %w", name, err)
+		}
 		return nil, fmt.Errorf("failed to reserve container name %q: %w", name, err)
 	}
 	span.SetAttributes(
@@ -206,7 +212,7 @@ type createContainerRequest struct {
 	sandboxID             string
 	imageID               string
 	containerConfig       *runtime.ContainerConfig
-	imageConfig           *v1.ImageConfig
+	imageConfig           *imagespec.ImageConfig
 	podSandboxConfig      *runtime.PodSandboxConfig
 	sandboxRuntimeHandler string
 	sandboxPid            uint32
@@ -782,6 +788,14 @@ func (c *criService) buildLinuxSpec(
 		}
 	}()
 
+	// cgroupns is used for hiding /sys/fs/cgroup from containers.
+	// For compatibility, cgroupns is not used when running in cgroup v1 mode or in privileged.
+	// https://github.com/containers/libpod/issues/4363
+	// https://github.com/kubernetes/enhancements/blob/0e409b47497e398b369c281074485c8de129694f/keps/sig-node/20191118-cgroups-v2.md#cgroup-namespace
+	if isUnifiedCgroupsMode() && !securityContext.GetPrivileged() {
+		specOpts = append(specOpts, oci.WithLinuxNamespace(runtimespec.LinuxNamespace{Type: runtimespec.CgroupNamespace}))
+	}
+
 	var ociSpecOpts oci.SpecOpts
 	if ociRuntime.CgroupWritable {
 		ociSpecOpts = customopts.WithMountsCgroupWritable(c.os, config, extraMounts, mountLabel, runtimeHandler)
@@ -919,14 +933,6 @@ func (c *criService) buildLinuxSpec(
 		specOpts,
 		annotations.DefaultCRIAnnotations(sandboxID, containerName, imageName, sandboxConfig, false)...,
 	)
-
-	// cgroupns is used for hiding /sys/fs/cgroup from containers.
-	// For compatibility, cgroupns is not used when running in cgroup v1 mode or in privileged.
-	// https://github.com/containers/libpod/issues/4363
-	// https://github.com/kubernetes/enhancements/blob/0e409b47497e398b369c281074485c8de129694f/keps/sig-node/20191118-cgroups-v2.md#cgroup-namespace
-	if isUnifiedCgroupsMode() && !securityContext.GetPrivileged() {
-		specOpts = append(specOpts, oci.WithLinuxNamespace(runtimespec.LinuxNamespace{Type: runtimespec.CgroupNamespace}))
-	}
 
 	return specOpts, nil
 }

@@ -17,7 +17,7 @@
 
 # Vagrantfile for Fedora and EL
 Vagrant.configure("2") do |config|
-  config.vm.box = ENV["BOX"] ? ENV["BOX"].split("@")[0] : "fedora/41-cloud-base"
+  config.vm.box = ENV["BOX"] ? ENV["BOX"].split("@")[0] : "fedora/43-cloud-base"
   # BOX_VERSION is deprecated. Use "BOX=<BOX>@<BOX_VERSION>".
   config.vm.box_version = ENV["BOX_VERSION"] || (ENV["BOX"].split("@")[1] if ENV["BOX"])
 
@@ -84,7 +84,9 @@ Vagrant.configure("2") do |config|
             lsof \
             make \
             strace \
+            kernel-modules-extra-$(uname -r) \
             ${INSTALL_PACKAGES}
+        modprobe xt_comment
     SHELL
   end
 
@@ -107,7 +109,7 @@ EOF
   config.vm.provision "install-golang", type: "shell", run: "once" do |sh|
     sh.upload_path = "/tmp/vagrant-install-golang"
     sh.env = {
-        'GO_VERSION': ENV['GO_VERSION'] || "1.24.4",
+        'GO_VERSION': ENV['GO_VERSION'] || "1.25.11",
     }
     sh.inline = <<~SHELL
         #!/usr/bin/env bash
@@ -276,6 +278,7 @@ EOF
         'GOTESTSUM_JSONFILE': ENV['GOTESTSUM_JSONFILE'],
         'GITHUB_WORKSPACE': '',
         'CGROUP_DRIVER': ENV['CGROUP_DRIVER'],
+        'RUNC_FLAVOR': ENV['RUNC_FLAVOR'] || "runc",
     }
     sh.inline = <<~SHELL
         #!/usr/bin/env bash
@@ -304,6 +307,7 @@ EOF
         'GOTEST': ENV['GOTEST'] || "go test",
         'REPORT_DIR': ENV['REPORT_DIR'],
         'CGROUP_DRIVER': ENV['CGROUP_DRIVER'],
+        'RUNC_FLAVOR': ENV['RUNC_FLAVOR'] || "runc",
     }
     sh.inline = <<~SHELL
         #!/usr/bin/env bash
